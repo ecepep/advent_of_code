@@ -1,4 +1,7 @@
-.vscode/
 
+# inputs \todo git-lfs
 **/*.txt
 **/*.csv
+
+#rust build
+**/target/*
