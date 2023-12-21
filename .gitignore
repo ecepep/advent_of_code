@@ -5,3 +5,5 @@
 
 #rust build
 **/target/*
+
+**/rubbish/*
