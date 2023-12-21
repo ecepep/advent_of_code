@@ -29,7 +29,7 @@ fn find_galaxies (input : &[u8]) -> Vec::<[u64; 2]> {
     return galaxies;
 }
 
-// Correct galaxy coordinate for universe expansion
+// Correct galaxy coordinate for universe expansion in 1D
 // \param dim: dimension (row or col)
 fn expand_universe(mut galaxies: Vec::<[u64; 2]>, dim : usize) -> Vec::<[u64; 2]> {
     let expansion_size = if IS_PART1 {1} else {1000000-1};
