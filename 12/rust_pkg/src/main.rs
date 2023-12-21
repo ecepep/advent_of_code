@@ -12,29 +12,29 @@ Translate from: https://github.com/hyper-neutrino/advent-of-code/blob/main/2023/
 use std::collections::HashMap;
 use std::str;
 
-fn parse_input(input: &[u8], is_part_1: bool) -> Vec::<(&[u8], Vec::<usize>)> {
+fn parse_input(input: &[u8], is_part_1: bool) -> Vec::<(Vec::<u8>, Vec::<usize>)> {
     // split lines
     let lines = input.split(|b| b == &b'\n');
 
     // split cfg and nums
-    let mut splits = lines.map(|line| {
+    let splits = lines.map(|line| {
         let mut spl = line.split(|b| b == &b' ');
         assert_eq!(spl.clone().count(), 2);
         
-        let cfg = spl.next().unwrap();
+        let cfg_b : &[u8] = spl.next().unwrap();
         let nums = spl.next().unwrap(); // nums as u8 string
         
         // Repeat input 5* for part 2
-        // if !is_part_1 {
-        //     let cfg = [cfg; 5].join(&b'?');
-        // }
-
-        (cfg, nums)
+        if !is_part_1 {
+            return ([cfg_b; 5].join(&b'?'), nums);
+        } else {
+            return (cfg_b.to_vec(), nums);
+        }
     });
 
     // parse the list of nums from u8 str to vec of int
     splits.map(|(cfg, nums)| {
-        let nums = nums.split(|b| b == &b',')
+        let mut nums = nums.split(|b| b == &b',')
                     .map(|n| {
                         str::from_utf8(n)
                             .unwrap()
@@ -42,8 +42,18 @@ fn parse_input(input: &[u8], is_part_1: bool) -> Vec::<(&[u8], Vec::<usize>)> {
                             .parse::<usize>()
                             .expect("Wrong input")
                     }).collect::<Vec::<usize>>();
+
+        // Repeat input 5* for part 2
+        if !is_part_1 {
+            nums = std::iter::repeat(nums.iter())
+                .flatten()
+                .take(nums.len()*5)
+                .map(|x| x.clone())
+                .collect::<Vec::<usize>>();
+        }
+        
         (cfg, nums)
-    }).collect::<Vec::<(&[u8], Vec::<usize> )>>()
+    }).collect::<Vec::<(Vec::<u8>, Vec::<usize> )>>()
 }
 
 fn possibilities<'a>(cfg: &'a [u8], nums: &'a[usize], mut cache : &mut HashMap::<(&'a [u8], &'a[usize]), usize>) -> usize {
@@ -75,31 +85,27 @@ fn possibilities<'a>(cfg: &'a [u8], nums: &'a[usize], mut cache : &mut HashMap::
         }
     }  
 
+    // save res to cache
     if !cache.contains_key(&key) {
         cache.insert(key.clone(), result);
-        
-        if cache.len() % 2500 == 0 {
-            println!("cache size: {}", cache.len());    
-        }
-
     }
     return result
 }
 
 fn main() {
-    let input = include_bytes!("input.txt");
-    // println!("input {}", String::from(str::from_utf8(input).unwrap()));
+    const IS_PART_1 : bool = false;
 
-    const IS_PART_1 : bool = true;
+    let input = include_bytes!("input.txt");
 
     let cfg_nums_parsed =  parse_input(input, IS_PART_1);
 
-    let mut cache : HashMap::<(&[u8], &[usize]), usize> = HashMap::new(); // cache previous fn output #memoizing
+    // cache output of the previous call to the recursive function #memoizing
+    let mut cache : HashMap::<(&[u8], &[usize]), usize> = HashMap::new(); 
 
     let total = cfg_nums_parsed.iter()
         .map(|(cfg, nums)| {
             possibilities(cfg, &nums[..], &mut cache)
         }).sum::<usize>();
 
-    println!("Part1: {}", total);
+    println!("Part {}: {}", if IS_PART_1 {"1"} else {"2"}, total);
 }
