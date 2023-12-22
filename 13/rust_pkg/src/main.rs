@@ -20,14 +20,6 @@ fn parse_input(input: &str) -> Vec<Vec<Vec<char>>> {
     return grids;
 }
 
-fn print_grid(name: &str, g: &Vec<Vec<char>>){
-    let sep = std::str::from_utf8(&[b'\r', b'\n']).unwrap();
-    let as_str = g.iter()
-        .map(|row| {  
-            row.iter().collect::<String>()
-         }).collect::<Vec<String>>().join(sep);
-    println!("{}:____\n{}\n",name, as_str);
-}
 
 fn find_reflect(g: &Vec<Vec<char>>) -> usize {
     for row in 1..g.len() {
@@ -73,6 +65,7 @@ fn score_grid(g: &Vec<Vec<char>>) -> usize {
 }
 
 fn main() {    
+    // @note from now on, we use include_str (char) instead of include_bytes (u8), to simplify
     let input = include_str!("input.txt");
     let grids = parse_input(input);
     
