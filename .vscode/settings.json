@@ -3,7 +3,7 @@
     "rust-analyzer.linkedProjects": [
         "11/rust_pkg/Cargo.toml",
         "12/rust_pkg/Cargo.toml",
-        // "13/rust_pkg/Cargo.toml",
+        "13/rust_pkg/Cargo.toml",
         // "14/rust_pkg/Cargo.toml",
         // "15/rust_pkg/Cargo.toml",
         // "16/rust_pkg/Cargo.toml",
