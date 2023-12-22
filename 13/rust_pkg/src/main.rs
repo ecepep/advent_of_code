@@ -34,12 +34,15 @@ fn find_reflect(g: &Vec<Vec<char>>) -> usize {
         let above = g.get(..row).unwrap().into_iter().rev().cloned().collect::<Vec<Vec<char>>>();
         let below = g.get(row..).unwrap().to_vec();
         
+        // Count nb of mismatch above and below the potential reflection
         let window = min(above.len(), below.len());
-        let reflects = (0..window).all(|r|{
-            above.get(r).unwrap() == below.get(r).unwrap()
-        });
+        let smudge_cnt = (0..window).map(|r|{
+            let a = above.get(r).unwrap();
+            let b = below.get(r).unwrap();
+            a.iter().zip(b).filter(|&(a, b)| a != b).count()
+        }).sum::<usize>();
         
-        if reflects {
+        if smudge_cnt == (if IS_PART_1 {0} else {1}) {
             return row;
         }
     }
@@ -77,5 +80,5 @@ fn main() {
         score_grid(g)
     }).sum::<usize>();
 
-    println!("result: {}", result);
+    println!("Part {}: {}", if IS_PART_1 {1} else {2}, result);
 }
