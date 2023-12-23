@@ -3,6 +3,7 @@ https://adventofcode.com/2023/day/16
 */
 
 use std::collections::{VecDeque, HashMap};
+use std::time::Instant;
 
 #[derive(Clone, Debug, PartialEq)]
 enum Direction {
@@ -83,14 +84,13 @@ fn step(grid: &[&[u8]], beam: &Beam) -> Vec<Beam> {
     return new_beams; 
 }
 
-fn draw_beam(grid: &[&[u8]]) -> HashMap<(usize, usize), Vec<Direction>> {
-    let start = Beam{ r : 0, c : 0, dir : Direction::Right};
+fn draw_beam(grid: &[&[u8]], start: &Beam)  -> HashMap<(usize, usize), Vec<Direction>> {
     let mut beams = VecDeque::<Beam>::new();
     beams.push_back(start.clone());
 
     // Prevent infinite looping
     let mut seen: HashMap<(usize, usize), Vec<Direction>> = Default::default();
-    seen.insert((start.r, start.c), vec![start.dir]);
+    seen.insert((start.r, start.c), vec![start.dir.clone()]);
 
     while !beams.is_empty() {
 
@@ -118,13 +118,33 @@ fn draw_beam(grid: &[&[u8]]) -> HashMap<(usize, usize), Vec<Direction>> {
 }
 
 fn main() {
+    // parse input
     let input = include_bytes!("input.txt");
-
     let grid = input
         .split(|b| b == &b'\n')
         .collect::<Vec<_>>().to_vec();
-
-    let seen = draw_beam(&grid);
     
-    println!("P1: {}", seen.len());
+    
+    // part 1
+    let p1_start = Beam{ r : 0, c : 0, dir : Direction::Right};
+    let seen = draw_beam(&grid, &p1_start);
+    println!("Part 1: {}", seen.len());
+    
+    // part 2
+    let now = Instant::now();
+
+    let mut p2_starts = Vec::<Beam>::new();
+    p2_starts.append(&mut ((0..grid.len()).map(|r| Beam{ r: r, c: 0, dir: Direction::Right}).collect::<Vec<Beam>>()));
+    p2_starts.append(&mut ((0..grid.len()).map(|r| Beam{ r: r, c: grid[0].len()-1, dir: Direction::Left}).collect::<Vec<Beam>>()));
+    p2_starts.append(&mut ((0..grid[0].len()).map(|c| Beam{ r: 0, c: c, dir: Direction::Down}).collect::<Vec<Beam>>()));
+    p2_starts.append(&mut ((0..grid[0].len()).map(|c| Beam{ r: grid.len()-1, c: c, dir: Direction::Up}).collect::<Vec<Beam>>()));
+    
+    let p2_max = p2_starts.iter()
+        .map(|start| {
+             draw_beam(&grid, &start).len()
+        }).max().unwrap();
+    println!("Part 2: {}", p2_max);        
+        
+    let elapsed = now.elapsed();
+    println!("Elapsed: {:.2?}", elapsed);
 }
