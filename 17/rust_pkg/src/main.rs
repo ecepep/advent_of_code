@@ -4,9 +4,9 @@ https://adventofcode.com/2023/day/17
 OC, djikstra: https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm
 */
 
-// use std::cmp;
-use std::{/* cmp::Reverse,  */cmp::Ordering,  collections::HashMap, collections::BinaryHeap};
-use std::time::{Instant, Duration};
+use std::{ cmp::Ordering,  collections::HashSet, collections::BinaryHeap };
+
+const IS_PART_1: bool = false;
 
 #[derive(Eq, Hash, Clone, Debug)]
 struct Path {
@@ -56,60 +56,28 @@ fn main() {
     let entrance = Path{ hl: 0, r: 0, c: 0, dir: (0,0), cnt: 0};
     pq.push(entrance);
 
-    let mut seen = HashMap::<Path, usize>::new();
-    // let mut seen_2 = HashMap::<(usize, usize), usize>::new();
+    let mut seen = HashSet::<Path>::new();
     
-    // let now = Instant::now();
-    
-    // let mut seen_skip = 0;
-    // let mut seen_pos_skip = 0;
-    // let mut iter: i32 = 0;
-    
-    'step_path:  while !pq.is_empty() /* && iter <5 */ {
-        
-        // iter+=1;
+    'step_path:  while !pq.is_empty() {
         let p = pq.pop().unwrap();
 
-        // if iter % 10000 == 0 {
-        //     println!("p.len() {} , iter {}", pq.len(), iter);
-        // }
-        // let elapsed = now.elapsed();
-        // if elapsed.as_secs() > 60*20 {
-        //     panic!("Too slow compute")
-        // }       
-        
         // we reach the end of the path
-        if p.r == grid.len()-1 && p.c == grid[0].len()-1 {    
-            // let elapsed = now.elapsed();
-            // println!("Elapsed: {:.2?}", elapsed);
-            // println!("seen_skip) {} , seen_pos_skip {}", seen_skip, seen_pos_skip);
-            println!("Part1: {}", p.hl);
+        if p.r == grid.len()-1 && p.c == grid[0].len()-1 {
+            if IS_PART_1 || p.cnt >= 4 {
+                println!("Part1: {}", p.hl);
+                break;
+            }    
         }
+
         // skip lesser optimal path
         let p_0hl = Path{ hl: 0, ..p };
-        if let Some(_prev) = seen.get_mut(&p_0hl) {
-            let (key, val) = seen.get_key_value(&p_0hl).unwrap();
-            // seen_skip +=1;
+        if seen.contains(&p_0hl) {
             continue 'step_path;
-        } else{
-            seen.insert(p_0hl, p.hl);
-        }
-           
-        // let p_pos = (p.r, p.c);
-        // match seen_2.get(&p_pos) {
-        //     Some(prev) => {
-        //         if p.hl - prev > 20  {
-        //             seen_pos_skip += 1;
-        //             continue 'step_path;
-        //         }
-        //     },
-        //     None => {
-        //         seen_2.insert(p_pos, p.hl);
-        //     }
-        // }
-                
+        } 
+        seen.insert(p_0hl);
+                           
         // try to keep straight
-        if p.cnt < 3 && p.dir != (0,0) {
+        if p.cnt < (if IS_PART_1 {3} else {10}) && p.dir != (0,0) {
             let n_r = p.r as isize + p.dir.0;
             let n_c = p.c as isize + p.dir.1;
 
@@ -130,6 +98,10 @@ fn main() {
 
         // try to explore
         for n_dir in [(0, 1), (1, 0), (0, -1), (-1, 0)]{
+            if !IS_PART_1 && p.cnt < 4 && p.dir != (0, 0) {
+                continue;
+            }
+
             if n_dir != p.dir && n_dir != (-p.dir.0, -p.dir.1) {
                 let n_r = p.r as isize + n_dir.0;
                 let n_c = p.c as isize + n_dir.1;        
