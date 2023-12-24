@@ -8,14 +8,14 @@
         "15/rust_pkg/Cargo.toml",
         "16/rust_pkg/Cargo.toml",
         "17/rust_pkg/Cargo.toml",
-        // "18/rust_pkg/Cargo.toml",
-        // "19/rust_pkg/Cargo.toml",
-        // "20/rust_pkg/Cargo.toml",
-        // "21/rust_pkg/Cargo.toml",
-        // "22/rust_pkg/Cargo.toml",
-        // "23/rust_pkg/Cargo.toml",
-        // "24/rust_pkg/Cargo.toml",
-        // "25/rust_pkg/Cargo.toml",
+        "18/rust_pkg/Cargo.toml",
+        "19/rust_pkg/Cargo.toml",
+        "20/rust_pkg/Cargo.toml",
+        "21/rust_pkg/Cargo.toml",
+        "22/rust_pkg/Cargo.toml",
+        "23/rust_pkg/Cargo.toml",
+        "24/rust_pkg/Cargo.toml",
+        "25/rust_pkg/Cargo.toml",
         "rubbish/rust_pkg/Cargo.toml"
     ]
 }
