@@ -1,5 +1,6 @@
-use core::cmp::min as min;
-use core::cmp::max as max;
+/*
+https://adventofcode.com/2023/day/18
+*/
 
 fn get_points(plan: &Vec<(u8, isize)>) -> (isize, Vec<(isize, isize)>) {
     let n_sum: isize = plan.iter().map(|(d,n)| {n}).sum();
